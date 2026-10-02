@@ -1,3 +1,5 @@
+let notes = [];
+
 const noteForm = document.querySelector("#note-form");
 const noteInput = document.querySelector("#note-input");
 const noteCategory = document.querySelector("#note-category");
