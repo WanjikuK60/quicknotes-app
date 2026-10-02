@@ -6,7 +6,31 @@ const noteCount = document.querySelector("#note-count");
 const errorMessage = document.querySelector("#error-message");
 const searchInput = document.querySelector("#search-input");
 
-let notes = [];
+const storageKey = "quicknotes-notes";
+const categories = ["personal", "work", "study"];
+
+function loadNotes() {
+  try {
+    const savedNotes = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    if (!Array.isArray(savedNotes)) {
+      return [];
+    }
+
+    return savedNotes.filter((note) =>
+      note &&
+      typeof note.id === "string" &&
+      typeof note.text === "string" &&
+      categories.includes(note.category) &&
+      typeof note.createdAt === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveNotes() {
+  localStorage.setItem(storageKey, JSON.stringify(notes));
+}
 
 function createNoteCard(note) {
   const item = document.createElement("li");
@@ -42,7 +66,20 @@ function createNoteCard(note) {
 
 function render() {
   notesList.replaceChildren();
-  for (const note of notes) {
+  const searchWords = searchInput.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const visibleNotes = notes.filter((note) => {
+    const noteText = note.text.toLowerCase();
+    return searchWords.every((word) => noteText.includes(word));
+  });
+
+  if (searchWords.length > 0 && visibleNotes.length === 0) {
+    const emptyMessage = document.createElement("li");
+    emptyMessage.classList.add("empty-message");
+    emptyMessage.textContent = "No notes match your search.";
+    notesList.append(emptyMessage);
+  }
+
+  for (const note of visibleNotes) {
     notesList.append(createNoteCard(note));
   }
   updateCount();
@@ -79,6 +116,7 @@ noteForm.addEventListener("submit", (event) => {
   };
 
   notes.unshift(note);
+  saveNotes();
   render();
   noteInput.value = "";
 });
@@ -90,7 +128,11 @@ notesList.addEventListener("click", (event) => {
   }
 
   notes = notes.filter((note) => note.id !== deleteButton.dataset.id);
+  saveNotes();
   render();
 });
 
+searchInput.addEventListener("input", render);
+
+notes = loadNotes();
 render();
