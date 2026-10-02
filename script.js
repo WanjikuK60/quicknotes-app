@@ -45,11 +45,32 @@ function render() {
   for (const note of notes) {
     notesList.append(createNoteCard(note));
   }
+  updateCount();
+}
+
+function updateCount() {
+  if (notes.length === 0) {
+    noteCount.textContent = "You have no notes yet.";
+  } else if (notes.length === 1) {
+    noteCount.textContent = "You have 1 note.";
+  } else {
+    noteCount.textContent = `You have ${notes.length} notes.`;
+  }
 }
 
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const text = noteInput.value.trim();
+  if (text === "") {
+    errorMessage.textContent = "Please type a note first.";
+    return;
+  }
+  if (noteInput.value.length > 200) {
+    errorMessage.textContent = "Notes must be 200 characters or fewer.";
+    return;
+  }
+
+  errorMessage.textContent = "";
   const note = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     text,
@@ -60,6 +81,16 @@ noteForm.addEventListener("submit", (event) => {
   notes.unshift(note);
   render();
   noteInput.value = "";
+});
+
+notesList.addEventListener("click", (event) => {
+  const deleteButton = event.target.closest(".delete-button");
+  if (!deleteButton) {
+    return;
+  }
+
+  notes = notes.filter((note) => note.id !== deleteButton.dataset.id);
+  render();
 });
 
 render();
