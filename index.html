@@ -4,13 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuickNotes</title>
+    <meta
+      name="description"
+      content="QuickNotes: a small note-taking app with categories, search and notes saved in your browser."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
     <header class="site-header">
       <div class="header-content">
-        <p class="eyebrow">A LITTLE SPACE FOR YOUR IDEAS</p>
+        <p class="eyebrow">A little space for your ideas</p>
         <h1>QuickNotes</h1>
         <p class="tagline">Catch a thought before it gets away.</p>
       </div>
@@ -19,19 +24,22 @@
     <main>
       <section class="panel add-panel" aria-labelledby="add-heading">
         <div class="section-heading">
-          <p class="section-index">01 / CAPTURE</p>
+          <p class="section-index">01 / Capture</p>
           <h2 id="add-heading">Add a note</h2>
         </div>
         <form id="note-form" novalidate>
           <div class="form-field note-field">
-            <label for="note-input">Note</label>
+            <div class="label-row">
+              <label for="note-input">Note</label>
+              <span id="char-count" class="char-count">0 / 200</span>
+            </div>
             <input
               id="note-input"
               name="note"
               type="text"
-              maxlength="201"
               placeholder="What do you want to remember?"
               autocomplete="off"
+              aria-describedby="char-count error-message"
             />
           </div>
           <div class="form-field category-field">
@@ -44,13 +52,13 @@
           </div>
           <button class="add-button" type="submit">Add Note</button>
         </form>
-        <p id="error-message" role="alert" aria-live="polite"></p>
+        <p id="error-message" role="alert"></p>
       </section>
 
       <section class="panel notes-panel" aria-labelledby="notes-heading">
         <div class="section-heading notes-heading">
           <div>
-            <p class="section-index">02 / COLLECTION</p>
+            <p class="section-index">02 / Collection</p>
             <h2 id="notes-heading">Your notes</h2>
           </div>
           <p id="note-count" aria-live="polite">You have no notes yet.</p>
@@ -63,7 +71,7 @@
           placeholder="Find a note..."
           autocomplete="off"
         />
-        <ul id="notes-list" aria-live="polite"></ul>
+        <ul id="notes-list"></ul>
       </section>
     </main>
 
